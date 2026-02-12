@@ -247,7 +247,7 @@ bot.onText(/\/start/, (msg) => {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule('45 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // 10:30
-cron.schedule('46 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // 18:30
+cron.schedule('33 15 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // 10:30
+cron.schedule('34 15 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // 18:30
 
 console.log('⏳ Бот готов к публикации IT-новостей...');
