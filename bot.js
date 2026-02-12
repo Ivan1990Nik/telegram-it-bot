@@ -247,7 +247,21 @@ bot.onText(/\/start/, (msg) => {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule('33 15 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // 10:30
-cron.schedule('34 15 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // 18:30
+cron.schedule('50 15 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // 10:30
+cron.schedule('51 15 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // 18:30
 
 console.log('⏳ Бот готов к публикации IT-новостей...');
+
+
+const express = require('express');
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send('Your service is live 🎉');
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
