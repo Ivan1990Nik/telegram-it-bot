@@ -8,7 +8,13 @@
     "start": "node bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["telegram", "bot", "it", "news", "yandex-gpt"],
+  "keywords": [
+    "telegram",
+    "bot",
+    "it",
+    "news",
+    "yandex-gpt"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -17,6 +23,7 @@
     "cheerio": "^1.2.0",
     "cron": "^4.4.0",
     "dotenv": "^17.2.4",
+    "express": "^5.2.1",
     "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
     "node-telegram-bot-api": "^0.67.0",
