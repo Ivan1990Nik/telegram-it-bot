@@ -15,6 +15,7 @@ const YANDEX_API_KEY = process.env.YANDEX_API_KEY;
 const YANDEX_FOLDER_ID = process.env.YANDEX_FOLDER_ID;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const RENDER_EXTERNAL_URL = process.env.RENDER_EXTERNAL_URL; // имя сервиса Render, без https и .onrender.com
 
 if (!TELEGRAM_CHAT_ID || !/^-100\d+$/.test(TELEGRAM_CHAT_ID)) {
   throw new Error('❌ TELEGRAM_CHAT_ID должен быть в формате "-1001234567890".');
@@ -27,7 +28,6 @@ const SENT_POSTS_FILE = './sent_posts.json';
 const RSS_SOURCES = [
   { name: 'Hacker News', url: 'https://news.ycombinator.com/rss' },
   { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
-  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
   { name: 'GitHub Blog', url: 'https://github.blog/feed/' },
 ];
 
@@ -54,9 +54,9 @@ function saveSentPost(id) {
 // ======================
 
 const IT_KEYWORDS = [
-  'programming', 'coding', 'developer', 'javascript', 'python', 'ai', 'artificial intelligence',
-  'machine learning', 'tech', 'software', 'framework', 'library', 'open source', 'api',
-  'github', 'dev', 'typescript', 'react', 'node.js', 'cloud', 'backend', 'frontend',
+  'programming','coding','developer','javascript','python','ai','artificial intelligence',
+  'machine learning','tech','software','framework','library','open source','api',
+  'github','dev','typescript','react','node.js','cloud','backend','frontend',
 ];
 
 function isITNews(text) {
@@ -140,14 +140,16 @@ ${text}
 // Telegram + Webhook через Express
 // ======================
 
-const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
+const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { webHook: { port: process.env.PORT || 3000 } });
 const app = express();
 app.use(express.json());
 
 const port = process.env.PORT || 3000;
-const renderUrl = process.env.RENDER_EXTERNAL_URL || '<your-render-service>';
-bot.setWebHook(`https://${renderUrl}.onrender.com/bot${TELEGRAM_BOT_TOKEN}`);
 
+// Установка webhook для Telegram
+bot.setWebHook(`https://${RENDER_EXTERNAL_URL}.onrender.com/bot${TELEGRAM_BOT_TOKEN}`);
+
+// Обработка обновлений от Telegram
 app.post(`/bot${TELEGRAM_BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
@@ -202,8 +204,8 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule('05 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // утро 10:30
-cron.schedule('10 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // вечер 18:30
+cron.schedule('05 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // утро
+cron.schedule('10 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // вечер
 
 // ======================
 // Запуск Express
@@ -211,5 +213,5 @@ cron.schedule('10 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // �
 
 app.listen(port, () => {
   console.log(`🤖 Бот запущен на порту ${port}`);
-  console.log(`Webhook установлен: https://${renderUrl}.onrender.com/bot${TELEGRAM_BOT_TOKEN}`);
+  console.log(`Webhook установлен: https://${RENDER_EXTERNAL_URL}.onrender.com/bot${TELEGRAM_BOT_TOKEN}`);
 });
