@@ -202,7 +202,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule('02 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // утро 10:30
+cron.schedule('05 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // утро 10:30
 cron.schedule('10 14 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' }); // вечер 18:30
 
 // ======================
