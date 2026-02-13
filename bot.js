@@ -287,6 +287,18 @@ bot?.onText?.(/\/suggestresource (.+)/, (msg, match) => {
   fs.appendFileSync('suggestions.txt', suggestion);
   bot.sendMessage(msg.chat.id, 'Спасибо! Мы рассмотрим твой ресурс 🙌');
 });
+bot.onText(/\/suggestresource$/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, `Привет! 👋
+Чтобы предложить ресурс, напиши команду так:
+
+/suggestresource URL_ресурса
+
+Например:
+/suggestresource https://ivan1990nik.github.io/portfolio/assets/logo-D9_LB6JM.PNG Фото друзей
+
+После этого я сохраню твоё предложение для рассмотрения.`);
+});
 
 
 
