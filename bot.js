@@ -193,25 +193,33 @@ async function sendToTelegram(text, retries = 3, delay = 2000) {
 // ======================
 // Основная задача
 // ======================
-
 async function dailyNewsTask() {
   console.log('🕒 Запуск задачи...');
   try {
     const newsList = await fetchITNews();
-    const freshNews = newsList.find(item => !sentPosts.has(item.id));
+    const freshNews = newsList.filter(item => !sentPosts.has(item.id));
 
-    if (!freshNews) {
+    if (freshNews.length === 0) {
       console.log('⚠️ Новых IT-новостей нет');
       return;
     }
 
-    console.log('📰 Берём новость:', freshNews.title);
-    const rewritten = await rewriteWithYandexGPT(`${freshNews.title}\n\n${freshNews.summary}`);
-    const cleaned = rewritten.replace(/\n\s*\n/g, '\n').trim();
-    const message = `🚀 IT-разбор:\n\n${cleaned}\n\n t.me/bro_Devel`;
+    console.log(`✅ Найдено ${freshNews.length} новых статей:`);
+    freshNews.forEach(item => console.log('   -', item.title));
 
-    const sent = await sendToTelegram(message);
-    if (sent) saveSentPost(freshNews.id);
+    for (const item of freshNews) {
+      console.log('📰 Обрабатываю:', item.title);
+      try {
+        const rewritten = await rewriteWithYandexGPT(`${item.title}\n\n${item.summary}`);
+        const cleaned = rewritten.replace(/\n\s*\n/g, '\n').trim();
+        const message = `🚀 IT-разбор:\n\n${cleaned}\n\n t.me/bro_Devel`;
+
+        const sent = await sendToTelegram(message);
+        if (sent) saveSentPost(item.id);
+      } catch (err) {
+        console.error('❌ Ошибка при обработке статьи:', item.title, err.message);
+      }
+    }
 
   } catch (err) {
     console.error('❌ Ошибка:', err.message);
