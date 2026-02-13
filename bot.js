@@ -123,7 +123,7 @@ function saveGiftStats() {
 // Cron для подарка
 // ======================
 
-cron.schedule('40 20 * * *', sendGiftOfTheDay, {
+cron.schedule('45 20 * * *', sendGiftOfTheDay, {
   timezone: 'Europe/Moscow'
 });
 
@@ -289,13 +289,24 @@ bot?.onText?.(/\/suggestresource (.+)/, (msg, match) => {
 // Обработка ошибок
 bot.on('polling_error', (error) => console.log('Polling error:', error.message));
 
-// Команда /start
+
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const welcomeMessage = `Привет, ${msg.from.first_name || 'друг'}! 👋\n\nМой канал: <a href="https://t.me/bro_Devel">t.me/bro_Devel</a>`;
+
+  const welcomeMessage = `
+Привет, ${msg.from.first_name || 'друг'}! 👋
+
+Мой канал: <a href="https://t.me/bro_Devel">t.me/bro_Devel</a>
+
+Выбирай действие ниже:
+`;
+
   const photoUrl = 'https://ivan1990nik.github.io/portfolio/assets/logo-D9_LB6JM.PNG';
 
-  bot.sendMessage(chatId, welcomeMessage, {
+  // Сначала отправляем фото с подписью
+  bot.sendPhoto(chatId, photoUrl, {
+    caption: welcomeMessage,
+    parse_mode: 'HTML',
     reply_markup: {
       keyboard: [
         ['🎁 Сегодняшний подарок']
