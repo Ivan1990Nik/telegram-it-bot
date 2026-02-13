@@ -158,26 +158,21 @@ bot.setWebHook(`${BOT_URL}/bot${TELEGRAM_BOT_TOKEN}`);
 bot.on('polling_error', (error) => console.log('Polling error:', error.message));
 
 // Команда /start
-
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
 
+  // ИЛИ используйте локальный файл: './images/welcome.jpg'
+  const welcomeMessage = `Привет, ${msg.from.first_name || 'друг'}! 👋 подписывайся на мой канал t.me/bro_Devel`;
   // Путь к изображению (локальный файл или URL)
-  const welcomeMessage = `Привет, ${msg.from.first_name || 'друг'}! 👋\n\nДобро пожаловать в мой мир! 🚀\n\nПодписывайся на мой канале:\n👉 (https://t.me/bro_Devel)`;
-  
   const photoUrl = 'https://ivan1990nik.github.io/portfolio/assets/logo-D9_LB6JM.PNG'; // 🔗 Ссылка на изображение
+
 
   // Отправляем фото с подписью
   bot.sendPhoto(chatId, photoUrl, {
     caption: welcomeMessage,
-    parse_mode: 'Markdown' // Чтобы работали эмодзи и форматирование ссылок
+    parse_mode: 'Markdown' // Чтобы работали эмодзи и форматирование
   });
 });
-
-
-
-
-
 
 // ======================
 // Функция отправки в Telegram с retry
