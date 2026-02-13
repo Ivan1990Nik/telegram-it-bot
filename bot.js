@@ -123,7 +123,7 @@ function saveGiftStats() {
 // Cron для подарка
 // ======================
 
-cron.schedule('45 20 * * *', sendGiftOfTheDay, {
+cron.schedule('03 12 * * *', sendGiftOfTheDay, {
   timezone: 'Europe/Moscow'
 });
 
