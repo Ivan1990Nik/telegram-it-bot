@@ -232,7 +232,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule('59 9,10 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' });
+cron.schedule('32 11,17 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' });
 
 // ======================
 // Express сервер + webhook
