@@ -1,17 +1,152 @@
 [
   {
     "title": "freeCodeCamp",
-    "description": "Бесплатная платформа для изучения программирования с практикой.",
+    "description": "Бесплатная платформа для изучения программирования с интерактивной практикой.",
     "url": "https://www.freecodecamp.org"
   },
   {
     "title": "Roadmap.sh",
-    "description": "Пошаговые roadmap'ы для разных IT-направлений.",
+    "description": "Готовые roadmap'ы для Frontend, Backend, DevOps, AI и других направлений.",
     "url": "https://roadmap.sh"
   },
   {
     "title": "Exercism",
-    "description": "Практика программирования с менторской проверкой.",
+    "description": "Практика программирования с ревью от менторов.",
     "url": "https://exercism.org"
+  },
+  {
+    "title": "Frontend Mentor",
+    "description": "Реальные задачи по верстке и frontend с макетами.",
+    "url": "https://www.frontendmentor.io"
+  },
+  {
+    "title": "LeetCode",
+    "description": "Задачи для подготовки к собеседованиям в IT-компании.",
+    "url": "https://leetcode.com"
+  },
+  {
+    "title": "Codewars",
+    "description": "Тренировка алгоритмов в игровом формате.",
+    "url": "https://www.codewars.com"
+  },
+  {
+    "title": "DevDocs",
+    "description": "Документация по языкам и фреймворкам в одном месте.",
+    "url": "https://devdocs.io"
+  },
+  {
+    "title": "MDN Web Docs",
+    "description": "Главная документация по веб-разработке.",
+    "url": "https://developer.mozilla.org"
+  },
+  {
+    "title": "OverAPI",
+    "description": "Cheat sheets по популярным технологиям.",
+    "url": "https://overapi.com"
+  },
+  {
+    "title": "GitHub Trending",
+    "description": "Самые популярные репозитории прямо сейчас.",
+    "url": "https://github.com/trending"
+  },
+  {
+    "title": "Product Hunt",
+    "description": "Новые технологические продукты каждый день.",
+    "url": "https://www.producthunt.com"
+  },
+  {
+    "title": "Hacker News",
+    "description": "Обсуждения технологий, стартапов и IT-новостей.",
+    "url": "https://news.ycombinator.com"
+  },
+  {
+    "title": "CSS Tricks",
+    "description": "Глубокие статьи по CSS и фронтенду.",
+    "url": "https://css-tricks.com"
+  },
+  {
+    "title": "Can I Use",
+    "description": "Проверка поддержки CSS и JS в браузерах.",
+    "url": "https://caniuse.com"
+  },
+  {
+    "title": "Stack Overflow",
+    "description": "Ответы на любые технические вопросы.",
+    "url": "https://stackoverflow.com"
+  },
+  {
+    "title": "System Design Primer",
+    "description": "Гайд по системному дизайну с примерами.",
+    "url": "https://github.com/donnemartin/system-design-primer"
+  },
+  {
+    "title": "Awesome Lists",
+    "description": "Подборки лучших ресурсов по разным технологиям.",
+    "url": "https://github.com/sindresorhus/awesome"
+  },
+  {
+    "title": "Refactoring Guru",
+    "description": "Паттерны проектирования и принципы ООП простым языком.",
+    "url": "https://refactoring.guru"
+  },
+  {
+    "title": "Clean Code JavaScript",
+    "description": "Принципы чистого кода на JavaScript.",
+    "url": "https://github.com/ryanmcdermott/clean-code-javascript"
+  },
+  {
+    "title": "Full Stack Open",
+    "description": "Бесплатный курс по современному fullstack-разработке.",
+    "url": "https://fullstackopen.com"
+  },
+  {
+    "title": "The Odin Project",
+    "description": "Бесплатная программа обучения веб-разработке.",
+    "url": "https://www.theodinproject.com"
+  },
+  {
+    "title": "SaaS Boilerplate",
+    "description": "Готовая база для запуска SaaS-проекта.",
+    "url": "https://github.com/saas-boilerplate"
+  },
+  {
+    "title": "Dev.to",
+    "description": "Сообщество разработчиков с полезными статьями.",
+    "url": "https://dev.to"
+  },
+  {
+    "title": "DigitalOcean Community",
+    "description": "Гайды по DevOps, backend и облачным технологиям.",
+    "url": "https://www.digitalocean.com/community"
+  },
+  {
+    "title": "Road to DevOps",
+    "description": "Подборка ресурсов для изучения DevOps.",
+    "url": "https://roadmap.sh/devops"
+  },
+  {
+    "title": "Docker Curriculum",
+    "description": "Пошаговое руководство по Docker.",
+    "url": "https://docker-curriculum.com"
+  },
+  {
+    "title": "Regex101",
+    "description": "Онлайн-тестер регулярных выражений.",
+    "url": "https://regex101.com"
+  },
+  {
+    "title": "JSON Formatter",
+    "description": "Удобный онлайн форматтер JSON.",
+    "url": "https://jsonformatter.org"
+  },
+  {
+    "title": "Excalidraw",
+    "description": "Онлайн-доска для схем и архитектур.",
+    "url": "https://excalidraw.com"
+  },
+  {
+    "title": "Readme.so",
+    "description": "Генератор красивых README для GitHub.",
+    "url": "https://readme.so"
   }
 ]

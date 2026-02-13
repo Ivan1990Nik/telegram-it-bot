@@ -28,6 +28,8 @@ const SENT_POSTS_FILE = './sent_posts.json';
 const RESOURCES_FILE = './resources.json';
 const GIFT_HISTORY_FILE = './gift_history.json';
 
+let todayGift = null;
+
 // ======================
 // Подарок дня — логика
 // ======================
@@ -71,6 +73,7 @@ async function sendGiftOfTheDay() {
 
   const history = loadGiftHistory();
   const resource = getRandomResource(resources, history);
+  todayGift = resource;
 
   const message = `
 🎁 <b>Подарок дня</b>
@@ -292,12 +295,34 @@ bot.onText(/\/start/, (msg) => {
   const welcomeMessage = `Привет, ${msg.from.first_name || 'друг'}! 👋\n\nМой канал: <a href="https://t.me/bro_Devel">t.me/bro_Devel</a>`;
   const photoUrl = 'https://ivan1990nik.github.io/portfolio/assets/logo-D9_LB6JM.PNG';
 
-  bot.sendPhoto(chatId, photoUrl, {
-    caption: welcomeMessage,
-    parse_mode: 'HTML' // ← ВСЁ РАБОТАЕТ, НИКАКИХ ОШИБОК!
+  bot.sendMessage(chatId, welcomeMessage, {
+    reply_markup: {
+      keyboard: [
+        ['🎁 Сегодняшний подарок']
+      ],
+      resize_keyboard: true
+    }
   });
 });
+bot.onText(/🎁 Сегодняшний подарок/, (msg) => {
+  const chatId = msg.chat.id;
 
+  if (!todayGift) {
+    return bot.sendMessage(chatId, 'Сегодня подарок ещё не был опубликован ⏳');
+  }
+
+  const message = `
+🎁 <b>Сегодняшний подарок</b>
+
+📌 <b>${todayGift.title}</b>
+
+${todayGift.description}
+
+🔗 ${todayGift.url}
+`.trim();
+
+  bot.sendMessage(chatId, message, { parse_mode: 'HTML' });
+});
 // ======================
 // Функция отправки в Telegram с retry
 // ======================
