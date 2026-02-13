@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "name": "DevDocs",
+    "url": "https://devdocs.io",
+    "type": "documentation",
+    "category": "dev-tools",
+    "desc": "Агрегатор документации по 50+ языкам и фреймворкам — все в одном окне. Без рекламы, без регистрации.",
+    "emoji": "📚",
+    "tags": [
+      "документация",
+      "разработка",
+      "удобство"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Excalidraw",
+    "url": "https://excalidraw.com",
+    "type": "diagram",
+    "category": "design",
+    "desc": "Бесплатный инструмент для рисования схем, архитектур, мозговых штурмов — как на бумаге, но с облаком.",
+    "emoji": "✏️",
+    "tags": [
+      "схемы",
+      "архитектура",
+      "визуализация"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Hacker News Clone (React)",
+    "url": "https://github.com/bradtraversy/hackernews-react",
+    "type": "code-template",
+    "category": "learning",
+    "desc": "Готовый репозиторий с React-клиентом для Hacker News. Отлично подойдёт для изучения API, состояний и CSS.",
+    "emoji": "⚡",
+    "tags": [
+      "react",
+      "пример",
+      "обучение"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "FreeCodeCamp — Backend Certification",
+    "url": "https://www.freecodecamp.org/learn/back-end-development-and-apis/",
+    "type": "course",
+    "category": "learning",
+    "desc": "Бесплатный курс по Node.js, MongoDB, API, OAuth — сертификат за 300 часов. Отлично для старта в бэкенде.",
+    "emoji": "🎓",
+    "tags": [
+      "курс",
+      "бесплатно",
+      "бэкенд"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Obsidian — Notes for Developers",
+    "url": "https://obsidian.md",
+    "type": "note-taking",
+    "category": "productivity",
+    "desc": "Локальный Markdown-менеджер с графом связей. Идеален для ведения технических заметок, архитектурных решений, баг-репортов.",
+    "emoji": "🧠",
+    "tags": [
+      "заметки",
+      "продуктивность",
+      "техническая документация"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "JSON Schema Validator",
+    "url": "https://www.jsonschemavalidator.net",
+    "type": "tool",
+    "category": "dev-tools",
+    "desc": "Бесплатный онлайн-валидатор JSON Schema. Проверяй схемы, генерируй примеры данных — без установки.",
+    "emoji": "🔧",
+    "tags": [
+      "json",
+      "валидация",
+      "инструмент"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Linux Command Line Cheat Sheet",
+    "url": "https://github.com/LeCoupa/awesome-cheatsheets/blob/master/languages/bash.sh",
+    "type": "cheatsheet",
+    "category": "learning",
+    "desc": "Самый полный чит-лист по bash и Linux CLI — от ls до ssh tunnels. Распечатай и повесь на стену.",
+    "emoji": "💾",
+    "tags": [
+      "bash",
+      "linux",
+      "чеклист"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Postman Public Workspaces",
+    "url": "https://www.postman.com/explore",
+    "type": "api",
+    "category": "dev-tools",
+    "desc": "Тысячи готовых API-коллекций: GitHub, Stripe, Twitter, OpenAI — скачай и тестируй без настройки.",
+    "emoji": "📡",
+    "tags": [
+      "api",
+      "postman",
+      "тестирование"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "CodeSandbox",
+    "url": "https://codesandbox.io",
+    "type": "playground",
+    "category": "dev-tools",
+    "desc": "Онлайн-редактор для React, Vue, Node.js — пиши, тестируй, делись кодом без установки.",
+    "emoji": "💻",
+    "tags": [
+      "playground",
+      "онлайн",
+      "react"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "ShadCN UI",
+    "url": "https://ui.shadcn.com",
+    "type": "component-library",
+    "category": "frontend",
+    "desc": "Бесплатные, доступные, кастомизируемые компоненты для React + Tailwind. Стиль — как у Figma.",
+    "emoji": "🎨",
+    "tags": [
+      "tailwind",
+      "react",
+      "ui"
+    ]
+  }
+]

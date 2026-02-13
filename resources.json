@@ -1,0 +1,17 @@
+[
+  {
+    "title": "freeCodeCamp",
+    "description": "Бесплатная платформа для изучения программирования с практикой.",
+    "url": "https://www.freecodecamp.org"
+  },
+  {
+    "title": "Roadmap.sh",
+    "description": "Пошаговые roadmap'ы для разных IT-направлений.",
+    "url": "https://roadmap.sh"
+  },
+  {
+    "title": "Exercism",
+    "description": "Практика программирования с менторской проверкой.",
+    "url": "https://exercism.org"
+  }
+]

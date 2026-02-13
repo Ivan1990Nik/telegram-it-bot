@@ -15,18 +15,114 @@ const YANDEX_API_KEY = process.env.YANDEX_API_KEY;
 const YANDEX_FOLDER_ID = process.env.YANDEX_FOLDER_ID;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-const BOT_URL = process.env.BOT_URL; // например https://telegram-it-bot.onrender.com
+const BOT_URL = process.env.BOT_URL;
 
 if (!TELEGRAM_CHAT_ID || !/^-100\d+$/.test(TELEGRAM_CHAT_ID)) {
-  throw new Error(
-    '❌ TELEGRAM_CHAT_ID должен быть в формате "-1001234567890".'
-  );
+  throw new Error('❌ TELEGRAM_CHAT_ID должен быть в формате "-1001234567890".');
 }
 
 const YANDEX_URL =
   'https://llm.api.cloud.yandex.net/foundationModels/v1/completion';
 
 const SENT_POSTS_FILE = './sent_posts.json';
+const RESOURCES_FILE = './resources.json';
+const GIFT_HISTORY_FILE = './gift_history.json';
+
+// ======================
+// Подарок дня — логика
+// ======================
+
+function loadResources() {
+  try {
+    return JSON.parse(fs.readFileSync(RESOURCES_FILE));
+  } catch {
+    return [];
+  }
+}
+
+function loadGiftHistory() {
+  try {
+    return JSON.parse(fs.readFileSync(GIFT_HISTORY_FILE));
+  } catch {
+    return [];
+  }
+}
+
+function saveGiftHistory(history) {
+  fs.writeFileSync(GIFT_HISTORY_FILE, JSON.stringify(history, null, 2));
+}
+
+function getRandomResource(resources, history) {
+  const recent = history.slice(-7);
+  const filtered = resources.filter(r => !recent.includes(r.title));
+
+  if (!filtered.length) {
+    return resources[Math.floor(Math.random() * resources.length)];
+  }
+
+  return filtered[Math.floor(Math.random() * filtered.length)];
+}
+
+async function sendGiftOfTheDay() {
+  console.log('🎁 Отправка подарка дня...');
+
+  const resources = loadResources();
+  if (!resources.length) return console.log('Нет ресурсов');
+
+  const history = loadGiftHistory();
+  const resource = getRandomResource(resources, history);
+
+  const message = `
+🎁 <b>Подарок дня</b>
+
+📌 <b>${resource.title}</b>
+
+${resource.description}
+
+🔗 ${resource.url}
+`.trim();
+
+  try {
+    await bot.sendMessage(TELEGRAM_CHAT_ID, message, {
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '👍 Полезно', callback_data: 'gift_like' },
+            { text: '🔥 Сохранил', callback_data: 'gift_saved' }
+          ]
+        ]
+      }
+    });
+
+    history.push(resource.title);
+    saveGiftHistory(history);
+
+    console.log('✅ Подарок отправлен');
+  } catch (err) {
+    console.error('❌ Ошибка отправки подарка:', err.message);
+  }
+}
+
+// ======================
+// Обработка реакций
+// ======================
+
+let giftStats = { likes: 0, saved: 0 };
+
+function saveGiftStats() {
+  fs.writeFileSync('./gift_stats.json', JSON.stringify(giftStats, null, 2));
+}
+
+
+
+// ======================
+// Cron для подарка
+// ======================
+
+cron.schedule('20 20 * * *', sendGiftOfTheDay, {
+  timezone: 'Europe/Moscow'
+});
 
 // ======================
 // RSS источники IT
@@ -154,6 +250,39 @@ ${text}
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
 bot.setWebHook(`${BOT_URL}/bot${TELEGRAM_BOT_TOKEN}`);
 
+
+bot?.on?.('callback_query', async (query) => {
+  if (query.data === 'gift_like') {
+    giftStats.likes++;
+    saveGiftStats();
+    await bot.answerCallbackQuery(query.id, { text: 'Рад что полезно 🙌' });
+  }
+
+  if (query.data === 'gift_saved') {
+    giftStats.saved++;
+    saveGiftStats();
+    await bot.answerCallbackQuery(query.id, { text: 'Отличный выбор 🔥' });
+  }
+});
+
+// ======================
+// /suggestresource
+// ======================
+
+bot?.onText?.(/\/suggestresource (.+)/, (msg, match) => {
+  const suggestion = `
+От: ${msg.from.username || msg.from.first_name}
+Текст: ${match[1]}
+Дата: ${new Date().toISOString()}
+---
+`;
+
+  fs.appendFileSync('suggestions.txt', suggestion);
+  bot.sendMessage(msg.chat.id, 'Спасибо! Мы рассмотрим твой ресурс 🙌');
+});
+
+
+
 // Обработка ошибок
 bot.on('polling_error', (error) => console.log('Polling error:', error.message));
 
@@ -262,3 +391,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 console.log('⏳ Бот готов к публикации IT-новостей...');
+
+
+
