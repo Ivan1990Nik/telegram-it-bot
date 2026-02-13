@@ -193,6 +193,7 @@ async function sendToTelegram(text, retries = 3, delay = 2000) {
 // ======================
 // Основная задача
 // ======================
+
 async function dailyNewsTask() {
   console.log('🕒 Запуск задачи...');
   try {
@@ -204,21 +205,22 @@ async function dailyNewsTask() {
       return;
     }
 
-    console.log(`✅ Найдено ${freshNews.length} новых статей:`);
-    freshNews.forEach(item => console.log('   -', item.title));
+    // 🔽 ВОТ ЕДИНСТВЕННОЕ ИЗМЕНЕНИЕ - случайный выбор
+    const randomIndex = Math.floor(Math.random() * freshNews.length);
+    const selectedNews = freshNews[randomIndex];
+    
+    console.log(`✅ Найдено ${freshNews.length} новых статей, выбираем случайную:`);
+    console.log('📰 Выбрана:', selectedNews.title);
 
-    for (const item of freshNews) {
-      console.log('📰 Обрабатываю:', item.title);
-      try {
-        const rewritten = await rewriteWithYandexGPT(`${item.title}\n\n${item.summary}`);
-        const cleaned = rewritten.replace(/\n\s*\n/g, '\n').trim();
-        const message = `🚀 IT-разбор:\n\n${cleaned}\n\n t.me/bro_Devel`;
+    try {
+      const rewritten = await rewriteWithYandexGPT(`${selectedNews.title}\n\n${selectedNews.summary}`);
+      const cleaned = rewritten.replace(/\n\s*\n/g, '\n').trim();
+      const message = `🚀 IT-разбор:\n\n${cleaned}\n\n t.me/bro_Devel`;
 
-        const sent = await sendToTelegram(message);
-        if (sent) saveSentPost(item.id);
-      } catch (err) {
-        console.error('❌ Ошибка при обработке статьи:', item.title, err.message);
-      }
+      const sent = await sendToTelegram(message);
+      if (sent) saveSentPost(selectedNews.id);
+    } catch (err) {
+      console.error('❌ Ошибка при обработке статьи:', selectedNews.title, err.message);
     }
 
   } catch (err) {
@@ -230,7 +232,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule('45 9,10 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' });
+cron.schedule('59 9,10 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' });
 
 // ======================
 // Express сервер + webhook
