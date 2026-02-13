@@ -295,7 +295,7 @@ bot.onText(/\/suggestresource$/, (msg) => {
 /suggestresource URL_ресурса
 
 Например:
-/suggestresource https://ivan1990nik.github.io/portfolio/assets/logo-D9_LB6JM.PNG Фото друзей
+/suggestresource https://ivan1990nik.github.io/portfolio/ для работы 
 
 После этого я сохраню твоё предложение для рассмотрения.`);
 });
