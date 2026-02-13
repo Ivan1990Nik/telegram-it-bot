@@ -205,11 +205,19 @@ async function dailyNewsTask() {
       return;
     }
 
-    // 🔽 ВОТ ЕДИНСТВЕННОЕ ИЗМЕНЕНИЕ - случайный выбор
-    const randomIndex = Math.floor(Math.random() * freshNews.length);
-    const selectedNews = freshNews[randomIndex];
+    // 🔽 ВЕСЬМА ВАЖНОЕ ИЗМЕНЕНИЕ - приоритет новым
+    // Сортируем по дате (свежие первыми)
+    const sortedNews = freshNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
     
-    console.log(`✅ Найдено ${freshNews.length} новых статей, выбираем случайную:`);
+    // Берём топ-5 самых свежих (или другое число)
+    const recentNews = sortedNews.slice(0, 3);
+    
+    // Выбираем случайную ИЗ САМЫХ СВЕЖИХ
+    const randomIndex = Math.floor(Math.random() * recentNews.length);
+    const selectedNews = recentNews[randomIndex];
+    
+    console.log(`✅ Найдено ${freshNews.length} новых статей`);
+    console.log(`📅 Выбираем из ${recentNews.length} самых свежих`);
     console.log('📰 Выбрана:', selectedNews.title);
 
     try {
@@ -232,7 +240,8 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule('32 11,17 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' });
+cron.schedule('32 9,15,19 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' });
+
 
 // ======================
 // Express сервер + webhook
