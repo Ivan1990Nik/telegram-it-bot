@@ -292,10 +292,10 @@ bot.onText(/\/suggestresource$/, (msg) => {
   bot.sendMessage(chatId, `Привет! 👋
 Чтобы предложить ресурс, напиши команду так:
 
-/suggestresource URL_ресурса
+/suggestresource URL_ресурса дчем полезна
 
 Например:
-/suggestresource https://ivan1990nik.github.io/portfolio/ для работы 
+/suggestresource https://ivan1990nik.github.io/portfolio для работы 
 
 После этого я сохраню твоё предложение для рассмотрения.`);
 });
