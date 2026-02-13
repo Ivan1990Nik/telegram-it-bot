@@ -253,6 +253,10 @@ ${text}
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
 bot.setWebHook(`${BOT_URL}/bot${TELEGRAM_BOT_TOKEN}`);
 
+bot.setMyCommands([
+  { command: 'start', description: 'Приветственное сообщение' },
+  { command: 'suggestresource', description: 'Предложить новый ресурс' }
+]);
 
 bot?.on?.('callback_query', async (query) => {
   if (query.data === 'gift_like') {
