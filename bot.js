@@ -302,6 +302,20 @@ bot.onText(/\/suggestresource$/, (msg) => {
 
 
 
+const ADMIN_ID = 8297520933;
+
+bot.onText(/\/viewsuggestions/, (msg) => {
+  if (msg.from.id !== ADMIN_ID) return;
+
+  try {
+    const data = fs.readFileSync('suggestions.txt', 'utf8');
+    bot.sendMessage(msg.chat.id, `📂 Предложения:\n\n${data.slice(-3000)}`);
+  } catch {
+    bot.sendMessage(msg.chat.id, 'Пока предложений нет.');
+  }
+});
+
+
 // Обработка ошибок
 bot.on('polling_error', (error) => console.log('Polling error:', error.message));
 
