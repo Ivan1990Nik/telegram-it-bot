@@ -1,4 +1,8 @@
-.env
 node_modules/
-
+.env
+*.db
+logs.json
+sent_news.json
 sent_posts.json
+sent_posts.txt
+users.json
