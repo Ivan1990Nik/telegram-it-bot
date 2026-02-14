@@ -255,7 +255,10 @@ bot.setWebHook(`${BOT_URL}/bot${TELEGRAM_BOT_TOKEN}`);
 
 bot.setMyCommands([
   { command: 'start', description: 'Приветственное сообщение' },
-  { command: 'suggestresource', description: 'Предложить новый ресурс' }
+  { command: 'suggestresource', description: 'Предложить новый ресурс' },
+  { command: 'viewsuggestions', description: 'доступна только адмнистратору' },
+  { command: 'stats', description: 'доступна только адмнистратору' },
+
 ]);
 
 bot?.on?.('callback_query', async (query) => {
@@ -314,6 +317,24 @@ bot.onText(/\/viewsuggestions/, (msg) => {
     bot.sendMessage(msg.chat.id, 'Пока предложений нет.');
   }
 });
+
+
+bot.onText(/\/stats/, (msg) => {
+  if (msg.from.id !== ADMIN_ID) {
+    return bot.sendMessage(msg.chat.id, 'У тебя нет доступа к этой команде ❌');
+  }
+
+  const message = `
+📊 Статистика подарков:
+
+👍 Полезно: ${giftStats.likes}
+🔥 Сохранили: ${giftStats.saved}
+  `.trim();
+
+  bot.sendMessage(msg.chat.id, message);
+});
+
+
 
 
 // Обработка ошибок
