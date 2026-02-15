@@ -12,6 +12,7 @@ const TelegramBot = require("node-telegram-bot-api");
 // ======================
 
 const YANDEX_API_KEY = process.env.YANDEX_API_KEY;
+const YANDEX_ART_KEY = process.env.YANDEX_ART_KEY;
 const YANDEX_FOLDER_ID = process.env.YANDEX_FOLDER_ID;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -469,7 +470,7 @@ async function generateImageWithYandex(prompt) {
       },
       {
         headers: {
-          Authorization: `Api-Key ${YANDEX_API_KEY}`,
+          Authorization: `Bearer ${YANDEX_ART_KEY}`, // вместо Api-Key
         },
       },
     );
@@ -565,7 +566,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule("25 9,15,20 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
+cron.schedule("50 9,15,20 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
 
 // ======================
 // Express сервер + webhook
