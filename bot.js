@@ -503,7 +503,9 @@ async function generateImageWithYandex(prompt) {
 
 async function dailyNewsTask() {
   console.log("🕒 Запуск задачи...");
+
   try {
+    // 1️⃣ Получаем свежие IT-новости
     const newsList = await fetchITNews();
     const freshNews = newsList.filter((item) => !sentPosts.has(item.id));
 
@@ -512,15 +514,15 @@ async function dailyNewsTask() {
       return;
     }
 
-    // Сортируем по дате (свежие сверху)
+    // 2️⃣ Сортируем по дате (свежие сверху)
     const sortedNews = freshNews.sort(
       (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
     );
 
-    // Берём топ-3 самых свежих
+    // 3️⃣ Берём топ-3 самых свежих
     const recentNews = sortedNews.slice(0, 3);
 
-    // Случайная новость из топ-3
+    // 4️⃣ Выбираем случайную новость из топ-3
     const randomIndex = Math.floor(Math.random() * recentNews.length);
     const selectedNews = recentNews[randomIndex];
 
@@ -529,24 +531,24 @@ async function dailyNewsTask() {
     console.log("📰 Выбрана:", selectedNews.title);
 
     try {
-      // Переписываем текст через Yandex GPT
+      // 5️⃣ Переписываем текст через Yandex GPT
       const rewritten = await rewriteWithYandexGPT(
         `${selectedNews.title}\n\n${selectedNews.summary}`,
       );
       const cleaned = rewritten.replace(/\n\s*\n/g, "\n").trim();
       const message = `🚀 IT-разбор:\n\n${cleaned}\n\n t.me/bro_Devel`;
 
-      // 🔹 Генерация картинки по теме новости
+      // 6️⃣ Генерация картинки через Yandex.Art
       const imagePrompt = `Иллюстрация для IT новости: "${selectedNews.title}"`;
       const imageUrl = await generateImageWithYandex(imagePrompt);
 
-      // Отправка текста + картинки (если картинка есть)
+      if (imageUrl) {
+        console.log("🖼 Картинка сгенерирована:", imageUrl);
+      }
+
+      // 7️⃣ Отправка текста + картинки в Telegram
       const sent = await sendToTelegram(message, imageUrl);
       if (sent) saveSentPost(selectedNews.id);
-
-      if (imageUrl) {
-        console.log("🖼 Картинка сгенерирована и отправлена:", imageUrl);
-      }
     } catch (err) {
       console.error(
         "❌ Ошибка при обработке статьи:",
@@ -563,7 +565,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule("23 9,15,20 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
+cron.schedule("25 9,15,20 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
 
 // ======================
 // Express сервер + webhook
