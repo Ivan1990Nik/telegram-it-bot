@@ -273,51 +273,6 @@ ${text}
   return result;
 }
 
-async function generateImageWithYandex(prompt) {
-  try {
-    const start = await axios.post(
-      "https://llm.api.cloud.yandex.net/foundationModels/v1/imageGenerationAsync",
-      {
-        modelUri: `art://${YANDEX_FOLDER_ID}/yandex-art/latest`,
-        generationOptions: {
-          resolution: { width: 1024, height: 1024 },
-        },
-        messages: [{ text: prompt }],
-      },
-      {
-        headers: {
-          Authorization: `Api-Key ${YANDEX_API_KEY}`,
-        },
-      },
-    );
-
-    const operationId = start.data.id;
-
-    // ждём генерацию
-    for (let i = 0; i < 10; i++) {
-      await new Promise((r) => setTimeout(r, 2000));
-
-      const check = await axios.get(
-        `https://operation.api.cloud.yandex.net/operations/${operationId}`,
-        {
-          headers: {
-            Authorization: `Api-Key ${YANDEX_API_KEY}`,
-          },
-        },
-      );
-
-      if (check.data.done) {
-        return check.data.response?.image?.url || null;
-      }
-    }
-
-    return null;
-  } catch (err) {
-    console.error("❌ Ошибка генерации картинки:", err.message);
-    return null;
-  }
-}
-
 // ======================
 // Telegram Bot
 // ======================
@@ -453,6 +408,10 @@ ${todayGift.description}
 // Функция отправки в Telegram с retry
 // ======================
 
+// ======================
+// Функция отправки в Telegram с retry и поддержкой картинки
+// ======================
+
 async function sendToTelegram(
   text,
   imageUrl = null,
@@ -462,7 +421,7 @@ async function sendToTelegram(
   for (let i = 0; i < retries; i++) {
     try {
       if (imageUrl) {
-        // если есть картинка — отправляем фото
+        // Отправляем фото с подписью
         await axios.post(
           `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`,
           {
@@ -473,7 +432,7 @@ async function sendToTelegram(
           },
         );
       } else {
-        // если картинки нет — обычный текст
+        // Отправляем обычное сообщение
         await axios.post(
           `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
           {
@@ -491,11 +450,9 @@ async function sendToTelegram(
         "❌ Ошибка Telegram:",
         err.response?.data?.description || err.message,
       );
-
       await new Promise((res) => setTimeout(res, delay));
     }
   }
-
   return false;
 }
 
@@ -514,7 +471,7 @@ async function dailyNewsTask() {
       return;
     }
 
-    // Сортировка по дате (свежие сверху)
+    // Сортируем по дате (свежие сверху)
     const sortedNews = freshNews.sort(
       (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
     );
@@ -565,7 +522,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule("35 9,15,19 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
+cron.schedule("20 9,15,20 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
 
 // ======================
 // Express сервер + webhook
