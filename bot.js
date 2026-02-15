@@ -471,7 +471,8 @@ async function generateImageWithYandex(prompt) {
       },
       {
         headers: {
-          Authorization: `Api-Key ${YANDEX_API_KEY}`, // используем короткий ключ
+          Authorization: `Bearer ${YANDEX_ART_KEY}`, // Используем SA Key
+          "Content-Type": "application/json",
         },
       },
     );
@@ -486,7 +487,9 @@ async function generateImageWithYandex(prompt) {
       const check = await axios.get(
         `https://operation.api.cloud.yandex.net/operations/${operationId}`,
         {
-          headers: { Authorization: `Api-Key ${YANDEX_API_KEY}` },
+          headers: {
+            Authorization: `Bearer ${YANDEX_ART_KEY}`, // Тот же ключ
+          },
         },
       );
 
@@ -574,7 +577,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule("06 9,15,21 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
+cron.schedule("27 9,15,21 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
 
 // ======================
 // Express сервер + webhook
