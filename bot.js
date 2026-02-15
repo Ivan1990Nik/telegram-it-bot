@@ -459,6 +459,7 @@ async function sendToTelegram(
 
 async function generateImageWithYandex(prompt) {
   try {
+    // 1️⃣ Создаём задачу генерации изображения
     const start = await axios.post(
       "https://llm.api.cloud.yandex.net/foundationModels/v1/imageGenerationAsync",
       {
@@ -470,34 +471,41 @@ async function generateImageWithYandex(prompt) {
       },
       {
         headers: {
-          Authorization: `Bearer ${YANDEX_ART_KEY}`, // вместо Api-Key
+          Authorization: `Api-Key ${YANDEX_API_KEY}`, // используем короткий ключ
         },
       },
     );
 
     const operationId = start.data.id;
+    if (!operationId) throw new Error("Не удалось получить operationId");
 
+    // 2️⃣ Проверяем статус операции до 10 раз с задержкой
     for (let i = 0; i < 10; i++) {
       await new Promise((r) => setTimeout(r, 2000));
 
       const check = await axios.get(
         `https://operation.api.cloud.yandex.net/operations/${operationId}`,
         {
-          headers: { Authorization: `Bearer ${YANDEX_ART_KEY}` },
+          headers: { Authorization: `Api-Key ${YANDEX_API_KEY}` },
         },
       );
 
       if (check.data.done) {
-        return check.data.response?.image?.url || null;
+        // Возвращаем ссылку на изображение
+        const imageUrl = check.data.response?.image?.url;
+        if (!imageUrl)
+          throw new Error("Yandex.Art вернул пустую ссылку на изображение");
+        return imageUrl;
       }
     }
 
-    return null;
+    throw new Error("Превышено время ожидания генерации картинки (timeout)");
   } catch (err) {
     console.error("❌ Ошибка генерации картинки:", err.message);
     return null;
   }
 }
+
 // ======================
 // Основная задача
 // ======================
