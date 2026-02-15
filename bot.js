@@ -1,11 +1,11 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const cron = require('node-cron');
-const axios = require('axios');
-const rssParser = require('rss-parser');
-const fs = require('fs');
-const TelegramBot = require('node-telegram-bot-api');
+const express = require("express");
+const cron = require("node-cron");
+const axios = require("axios");
+const rssParser = require("rss-parser");
+const fs = require("fs");
+const TelegramBot = require("node-telegram-bot-api");
 
 // ======================
 // Конфиг
@@ -18,15 +18,17 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const BOT_URL = process.env.BOT_URL;
 
 if (!TELEGRAM_CHAT_ID || !/^-100\d+$/.test(TELEGRAM_CHAT_ID)) {
-  throw new Error('❌ TELEGRAM_CHAT_ID должен быть в формате "-1001234567890".');
+  throw new Error(
+    '❌ TELEGRAM_CHAT_ID должен быть в формате "-1001234567890".',
+  );
 }
 
 const YANDEX_URL =
-  'https://llm.api.cloud.yandex.net/foundationModels/v1/completion';
+  "https://llm.api.cloud.yandex.net/foundationModels/v1/completion";
 
-const SENT_POSTS_FILE = './sent_posts.json';
-const RESOURCES_FILE = './resources.json';
-const GIFT_HISTORY_FILE = './gift_history.json';
+const SENT_POSTS_FILE = "./sent_posts.json";
+const RESOURCES_FILE = "./resources.json";
+const GIFT_HISTORY_FILE = "./gift_history.json";
 
 let todayGift = null;
 
@@ -56,7 +58,7 @@ function saveGiftHistory(history) {
 
 function getRandomResource(resources, history) {
   const recent = history.slice(-7);
-  const filtered = resources.filter(r => !recent.includes(r.title));
+  const filtered = resources.filter((r) => !recent.includes(r.title));
 
   if (!filtered.length) {
     return resources[Math.floor(Math.random() * resources.length)];
@@ -66,10 +68,10 @@ function getRandomResource(resources, history) {
 }
 
 async function sendGiftOfTheDay() {
-  console.log('🎁 Отправка подарка дня...');
+  console.log("🎁 Отправка подарка дня...");
 
   const resources = loadResources();
-  if (!resources.length) return console.log('Нет ресурсов');
+  if (!resources.length) return console.log("Нет ресурсов");
 
   const history = loadGiftHistory();
   const resource = getRandomResource(resources, history);
@@ -87,23 +89,23 @@ ${resource.description}
 
   try {
     await bot.sendMessage(TELEGRAM_CHAT_ID, message, {
-      parse_mode: 'HTML',
+      parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
           [
-            { text: '👍 Полезно', callback_data: 'gift_like' },
-            { text: '🔥 Сохранил', callback_data: 'gift_saved' }
-          ]
-        ]
-      }
+            { text: "👍 Полезно", callback_data: "gift_like" },
+            { text: "🔥 Сохранил", callback_data: "gift_saved" },
+          ],
+        ],
+      },
     });
 
     history.push(resource.title);
     saveGiftHistory(history);
 
-    console.log('✅ Подарок отправлен');
+    console.log("✅ Подарок отправлен");
   } catch (err) {
-    console.error('❌ Ошибка отправки подарка:', err.message);
+    console.error("❌ Ошибка отправки подарка:", err.message);
   }
 }
 
@@ -114,17 +116,15 @@ ${resource.description}
 let giftStats = { likes: 0, saved: 0 };
 
 function saveGiftStats() {
-  fs.writeFileSync('./gift_stats.json', JSON.stringify(giftStats, null, 2));
+  fs.writeFileSync("./gift_stats.json", JSON.stringify(giftStats, null, 2));
 }
-
-
 
 // ======================
 // Cron для подарка
 // ======================
 
-cron.schedule('03 12 * * *', sendGiftOfTheDay, {
-  timezone: 'Europe/Moscow'
+cron.schedule("03 12 * * *", sendGiftOfTheDay, {
+  timezone: "Europe/Moscow",
 });
 
 // ======================
@@ -132,10 +132,10 @@ cron.schedule('03 12 * * *', sendGiftOfTheDay, {
 // ======================
 
 const RSS_SOURCES = [
-  { name: 'Hacker News', url: 'https://news.ycombinator.com/rss' },
-  { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
-  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
-  { name: 'GitHub Blog', url: 'https://github.blog/feed/' },
+  { name: "Hacker News", url: "https://news.ycombinator.com/rss" },
+  { name: "TechCrunch", url: "https://techcrunch.com/feed/" },
+  { name: "The Verge", url: "https://www.theverge.com/rss/index.xml" },
+  { name: "GitHub Blog", url: "https://github.blog/feed/" },
 ];
 
 // ======================
@@ -158,12 +158,31 @@ function saveSentPost(id) {
 // ======================
 
 const IT_KEYWORDS = [
-  'programming','coding','developer','JavaScript','Python','AI','artificial intelligence',
-  'machine learning','tech','software','framework','library','open source','API','GitHub',
-  'dev','typescript','react','node.js','cloud','backend','frontend'
+  "programming",
+  "coding",
+  "developer",
+  "JavaScript",
+  "Python",
+  "AI",
+  "artificial intelligence",
+  "machine learning",
+  "tech",
+  "software",
+  "framework",
+  "library",
+  "open source",
+  "API",
+  "GitHub",
+  "dev",
+  "typescript",
+  "react",
+  "node.js",
+  "cloud",
+  "backend",
+  "frontend",
 ];
 
-const keywordsRegex = new RegExp(IT_KEYWORDS.join('|'), 'i');
+const keywordsRegex = new RegExp(IT_KEYWORDS.join("|"), "i");
 
 function isITNews(text) {
   return keywordsRegex.test(text);
@@ -174,7 +193,10 @@ function isITNews(text) {
 // ======================
 
 async function fetchITNews() {
-  const parser = new rssParser({ headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 });
+  const parser = new rssParser({
+    headers: { "User-Agent": "Mozilla/5.0" },
+    timeout: 10000,
+  });
   let allItems = [];
 
   for (const source of RSS_SOURCES) {
@@ -184,11 +206,16 @@ async function fetchITNews() {
       if (!feed?.items?.length) continue;
 
       const filtered = feed.items
-        .filter(item => isITNews(item.title + ' ' + (item.contentSnippet || '')))
-        .map(item => ({
+        .filter((item) =>
+          isITNews(item.title + " " + (item.contentSnippet || "")),
+        )
+        .map((item) => ({
           id: item.link,
-          title: item.title?.trim() || '',
-          summary: item.contentSnippet?.trim() || item.description?.trim() || 'Без описания',
+          title: item.title?.trim() || "",
+          summary:
+            item.contentSnippet?.trim() ||
+            item.description?.trim() ||
+            "Без описания",
         }));
 
       allItems = allItems.concat(filtered);
@@ -228,22 +255,67 @@ ${text}
 `.trim();
 
   const response = await fetch(YANDEX_URL, {
-    method: 'POST',
+    method: "POST",
     headers: {
       Authorization: `Api-Key ${YANDEX_API_KEY}`,
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt/latest`,
       completionOptions: { stream: false, temperature: 0.85, maxTokens: 800 },
-      messages: [{ role: 'user', text: prompt }],
+      messages: [{ role: "user", text: prompt }],
     }),
   });
 
   const data = await response.json();
   const result = data?.result?.alternatives?.[0]?.message?.text?.trim();
-  if (!result) throw new Error('GPT вернул пустой ответ');
+  if (!result) throw new Error("GPT вернул пустой ответ");
   return result;
+}
+
+async function generateImageWithYandex(prompt) {
+  try {
+    const start = await axios.post(
+      "https://llm.api.cloud.yandex.net/foundationModels/v1/imageGenerationAsync",
+      {
+        modelUri: `art://${YANDEX_FOLDER_ID}/yandex-art/latest`,
+        generationOptions: {
+          resolution: { width: 1024, height: 1024 },
+        },
+        messages: [{ text: prompt }],
+      },
+      {
+        headers: {
+          Authorization: `Api-Key ${YANDEX_API_KEY}`,
+        },
+      },
+    );
+
+    const operationId = start.data.id;
+
+    // ждём генерацию
+    for (let i = 0; i < 10; i++) {
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const check = await axios.get(
+        `https://operation.api.cloud.yandex.net/operations/${operationId}`,
+        {
+          headers: {
+            Authorization: `Api-Key ${YANDEX_API_KEY}`,
+          },
+        },
+      );
+
+      if (check.data.done) {
+        return check.data.response?.image?.url || null;
+      }
+    }
+
+    return null;
+  } catch (err) {
+    console.error("❌ Ошибка генерации картинки:", err.message);
+    return null;
+  }
 }
 
 // ======================
@@ -254,24 +326,23 @@ const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
 bot.setWebHook(`${BOT_URL}/bot${TELEGRAM_BOT_TOKEN}`);
 
 bot.setMyCommands([
-  { command: 'start', description: 'Приветственное сообщение' },
-  { command: 'suggestresource', description: 'Предложить новый ресурс' },
-  { command: 'viewsuggestions', description: 'доступна только адмнистратору' },
-  { command: 'stats', description: 'доступна только адмнистратору' },
-
+  { command: "start", description: "Приветственное сообщение" },
+  { command: "suggestresource", description: "Предложить новый ресурс" },
+  { command: "viewsuggestions", description: "доступна только адмнистратору" },
+  { command: "stats", description: "доступна только адмнистратору" },
 ]);
 
-bot?.on?.('callback_query', async (query) => {
-  if (query.data === 'gift_like') {
+bot?.on?.("callback_query", async (query) => {
+  if (query.data === "gift_like") {
     giftStats.likes++;
     saveGiftStats();
-    await bot.answerCallbackQuery(query.id, { text: 'Рад что полезно 🙌' });
+    await bot.answerCallbackQuery(query.id, { text: "Рад что полезно 🙌" });
   }
 
-  if (query.data === 'gift_saved') {
+  if (query.data === "gift_saved") {
     giftStats.saved++;
     saveGiftStats();
-    await bot.answerCallbackQuery(query.id, { text: 'Отличный выбор 🔥' });
+    await bot.answerCallbackQuery(query.id, { text: "Отличный выбор 🔥" });
   }
 });
 
@@ -287,12 +358,14 @@ bot?.onText?.(/\/suggestresource (.+)/, (msg, match) => {
 ---
 `;
 
-  fs.appendFileSync('suggestions.txt', suggestion);
-  bot.sendMessage(msg.chat.id, 'Спасибо! Мы рассмотрим твой ресурс 🙌');
+  fs.appendFileSync("suggestions.txt", suggestion);
+  bot.sendMessage(msg.chat.id, "Спасибо! Мы рассмотрим твой ресурс 🙌");
 });
 bot.onText(/\/suggestresource$/, (msg) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, `Привет! 👋
+  bot.sendMessage(
+    chatId,
+    `Привет! 👋
 Чтобы предложить ресурс, напиши команду так:
 
 /suggestresource URL_ресурса и чем полезна
@@ -300,10 +373,9 @@ bot.onText(/\/suggestresource$/, (msg) => {
 Например:
 /suggestresource https://ivan1990nik.github.io/portfolio для работы 
 
-После этого я сохраню твоё предложение для рассмотрения.`);
+После этого я сохраню твоё предложение для рассмотрения.`,
+  );
 });
-
-
 
 const ADMIN_ID = 8297520933;
 
@@ -311,17 +383,16 @@ bot.onText(/\/viewsuggestions/, (msg) => {
   if (msg.from.id !== ADMIN_ID) return;
 
   try {
-    const data = fs.readFileSync('suggestions.txt', 'utf8');
+    const data = fs.readFileSync("suggestions.txt", "utf8");
     bot.sendMessage(msg.chat.id, `📂 Предложения:\n\n${data.slice(-3000)}`);
   } catch {
-    bot.sendMessage(msg.chat.id, 'Пока предложений нет.');
+    bot.sendMessage(msg.chat.id, "Пока предложений нет.");
   }
 });
 
-
 bot.onText(/\/stats/, (msg) => {
   if (msg.from.id !== ADMIN_ID) {
-    return bot.sendMessage(msg.chat.id, 'У тебя нет доступа к этой команде ❌');
+    return bot.sendMessage(msg.chat.id, "У тебя нет доступа к этой команде ❌");
   }
 
   const message = `
@@ -334,39 +405,36 @@ bot.onText(/\/stats/, (msg) => {
   bot.sendMessage(msg.chat.id, message);
 });
 
-
-
-
 // Обработка ошибок
-bot.on('polling_error', (error) => console.log('Polling error:', error.message));
-
+bot.on("polling_error", (error) =>
+  console.log("Polling error:", error.message),
+);
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const photoUrl = 'https://ivan1990nik.github.io/portfolio/assets/logo-D9_LB6JM.PNG';
-  const welcomeMessage = `Привет, ${msg.from.first_name || 'друг'}! 👋\n\nМой канал: <a href="https://t.me/bro_Devel">t.me/bro_Devel</a>\n\nНажми кнопку ниже, чтобы увидеть 🎁 подарок дня!`;
+  const photoUrl =
+    "https://ivan1990nik.github.io/portfolio/assets/logo-D9_LB6JM.PNG";
+  const welcomeMessage = `Привет, ${msg.from.first_name || "друг"}! 👋\n\nМой канал: <a href="https://t.me/bro_Devel">t.me/bro_Devel</a>\n\nНажми кнопку ниже, чтобы увидеть 🎁 подарок дня!`;
 
   // Отправляем фото с подписью
   bot.sendPhoto(chatId, photoUrl, {
     caption: welcomeMessage,
-    parse_mode: 'HTML'
+    parse_mode: "HTML",
   });
 
   // Отправляем клавиатуру с одной кнопкой
-  bot.sendMessage(chatId, 'Выбери действие:', {
+  bot.sendMessage(chatId, "Выбери действие:", {
     reply_markup: {
-      keyboard: [
-        ['🎁 Сегодняшний подарок']
-      ],
-      resize_keyboard: true
-    }
+      keyboard: [["🎁 Сегодняшний подарок"]],
+      resize_keyboard: true,
+    },
   });
 });
 bot.onText(/🎁 Сегодняшний подарок/, (msg) => {
   const chatId = msg.chat.id;
 
   if (!todayGift) {
-    return bot.sendMessage(chatId, 'Сегодня подарок ещё не был опубликован ⏳');
+    return bot.sendMessage(chatId, "Сегодня подарок ещё не был опубликован ⏳");
   }
 
   const message = `
@@ -379,26 +447,55 @@ ${todayGift.description}
 🔗 ${todayGift.url}
 `.trim();
 
-  bot.sendMessage(chatId, message, { parse_mode: 'HTML' });
+  bot.sendMessage(chatId, message, { parse_mode: "HTML" });
 });
 // ======================
 // Функция отправки в Telegram с retry
 // ======================
 
-async function sendToTelegram(text, retries = 3, delay = 2000) {
+async function sendToTelegram(
+  text,
+  imageUrl = null,
+  retries = 3,
+  delay = 2000,
+) {
   for (let i = 0; i < retries; i++) {
     try {
-      await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        chat_id: TELEGRAM_CHAT_ID,
-        text
-      });
-      console.log('🎉 Новость отправлена в Telegram!');
+      if (imageUrl) {
+        // если есть картинка — отправляем фото
+        await axios.post(
+          `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`,
+          {
+            chat_id: TELEGRAM_CHAT_ID,
+            photo: imageUrl,
+            caption: text,
+            parse_mode: "HTML",
+          },
+        );
+      } else {
+        // если картинки нет — обычный текст
+        await axios.post(
+          `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+          {
+            chat_id: TELEGRAM_CHAT_ID,
+            text,
+            parse_mode: "HTML",
+          },
+        );
+      }
+
+      console.log("🎉 Новость отправлена в Telegram!");
       return true;
     } catch (err) {
-      console.error('❌ Ошибка Telegram:', err.response?.data?.description || err.message);
-      await new Promise(res => setTimeout(res, delay));
+      console.error(
+        "❌ Ошибка Telegram:",
+        err.response?.data?.description || err.message,
+      );
+
+      await new Promise((res) => setTimeout(res, delay));
     }
   }
+
   return false;
 }
 
@@ -407,44 +504,60 @@ async function sendToTelegram(text, retries = 3, delay = 2000) {
 // ======================
 
 async function dailyNewsTask() {
-  console.log('🕒 Запуск задачи...');
+  console.log("🕒 Запуск задачи...");
   try {
     const newsList = await fetchITNews();
-    const freshNews = newsList.filter(item => !sentPosts.has(item.id));
+    const freshNews = newsList.filter((item) => !sentPosts.has(item.id));
 
     if (freshNews.length === 0) {
-      console.log('⚠️ Новых IT-новостей нет');
+      console.log("⚠️ Новых IT-новостей нет");
       return;
     }
 
-    // 🔽 ВЕСЬМА ВАЖНОЕ ИЗМЕНЕНИЕ - приоритет новым
-    // Сортируем по дате (свежие первыми)
-    const sortedNews = freshNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-    
-    // Берём топ-5 самых свежих (или другое число)
+    // Сортировка по дате (свежие сверху)
+    const sortedNews = freshNews.sort(
+      (a, b) => new Date(b.pubDate) - new Date(a.pubDate),
+    );
+
+    // Берём топ-3 самых свежих
     const recentNews = sortedNews.slice(0, 3);
-    
-    // Выбираем случайную ИЗ САМЫХ СВЕЖИХ
+
+    // Случайная новость из топ-3
     const randomIndex = Math.floor(Math.random() * recentNews.length);
     const selectedNews = recentNews[randomIndex];
-    
+
     console.log(`✅ Найдено ${freshNews.length} новых статей`);
     console.log(`📅 Выбираем из ${recentNews.length} самых свежих`);
-    console.log('📰 Выбрана:', selectedNews.title);
+    console.log("📰 Выбрана:", selectedNews.title);
 
     try {
-      const rewritten = await rewriteWithYandexGPT(`${selectedNews.title}\n\n${selectedNews.summary}`);
-      const cleaned = rewritten.replace(/\n\s*\n/g, '\n').trim();
+      // Переписываем текст через Yandex GPT
+      const rewritten = await rewriteWithYandexGPT(
+        `${selectedNews.title}\n\n${selectedNews.summary}`,
+      );
+      const cleaned = rewritten.replace(/\n\s*\n/g, "\n").trim();
       const message = `🚀 IT-разбор:\n\n${cleaned}\n\n t.me/bro_Devel`;
 
-      const sent = await sendToTelegram(message);
-      if (sent) saveSentPost(selectedNews.id);
-    } catch (err) {
-      console.error('❌ Ошибка при обработке статьи:', selectedNews.title, err.message);
-    }
+      // 🔹 Генерация картинки по теме новости
+      const imagePrompt = `Иллюстрация для IT новости: "${selectedNews.title}"`;
+      const imageUrl = await generateImageWithYandex(imagePrompt);
 
+      // Отправка текста + картинки (если картинка есть)
+      const sent = await sendToTelegram(message, imageUrl);
+      if (sent) saveSentPost(selectedNews.id);
+
+      if (imageUrl) {
+        console.log("🖼 Картинка сгенерирована и отправлена:", imageUrl);
+      }
+    } catch (err) {
+      console.error(
+        "❌ Ошибка при обработке статьи:",
+        selectedNews.title,
+        err.message,
+      );
+    }
   } catch (err) {
-    console.error('❌ Ошибка:', err.message);
+    console.error("❌ Ошибка:", err.message);
   }
 }
 
@@ -452,8 +565,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule('21 9,15,19 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' });
-
+cron.schedule("35 9,15,19 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
 
 // ======================
 // Express сервер + webhook
@@ -462,8 +574,8 @@ cron.schedule('21 9,15,19 * * *', dailyNewsTask, { timezone: 'Europe/Moscow' });
 const app = express();
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('Your service is live 🎉'));
-app.get('/health', (req, res) => res.send('OK'));
+app.get("/", (req, res) => res.send("Your service is live 🎉"));
+app.get("/health", (req, res) => res.send("OK"));
 
 app.post(`/bot${TELEGRAM_BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
@@ -473,7 +585,4 @@ app.post(`/bot${TELEGRAM_BOT_TOKEN}`, (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-console.log('⏳ Бот готов к публикации IT-новостей...');
-
-
-
+console.log("⏳ Бот готов к публикации IT-новостей...");
