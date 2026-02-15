@@ -336,7 +336,8 @@ bot.onText(/\/suggestresource$/, (msg) => {
 const ADMIN_ID = 8297520933;
 
 bot.onText(/\/viewsuggestions/, (msg) => {
-  if (msg.from.id !== ADMIN_ID) return;
+  if (msg.from.id !== ADMIN_ID)
+    return bot.sendMessage(msg.chat.id, "У тебя нет доступа к этой команде ❌");
 
   try {
     const data = fs.readFileSync("suggestions.txt", "utf8");
@@ -499,10 +500,10 @@ async function dailyNewsTask() {
 }
 
 // ======================
-// Cron — 2 раза в день
+// Cron — 3 раза в день
 // ======================
 
-cron.schedule("59 9,15,21 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
+cron.schedule("05 9,14,17 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
 
 // ======================
 // Express сервер + webhook
