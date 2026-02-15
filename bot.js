@@ -216,6 +216,7 @@ async function fetchITNews() {
             item.contentSnippet?.trim() ||
             item.description?.trim() ||
             "Без описания",
+          image: item.enclosure?.url || item["media:content"]?.url || null, // картинка
         }));
 
       allItems = allItems.concat(filtered);
@@ -470,8 +471,21 @@ async function dailyNewsTask() {
       const cleaned = rewritten.replace(/\n\s*\n/g, "\n").trim();
       const message = `🚀 IT-разбор:\n\n${cleaned}\n\n t.me/bro_Devel`;
 
-      const sent = await sendToTelegram(message);
-      if (sent) saveSentPost(selectedNews.id);
+      // Отправляем фото с текстом
+      if (selectedNews.image) {
+        await bot.sendPhoto(TELEGRAM_CHAT_ID, selectedNews.image, {
+          caption: message,
+          parse_mode: "HTML",
+        });
+      } else {
+        const fallbackImage =
+          "https://ivan1990nik.github.io/portfolio/assets/logo-D9_LB6JM.PNG";
+        await bot.sendPhoto(TELEGRAM_CHAT_ID, fallbackImage, {
+          caption: message,
+          parse_mode: "HTML",
+        });
+      }
+      saveSentPost(selectedNews.id);
     } catch (err) {
       console.error(
         "❌ Ошибка при обработке статьи:",
@@ -488,7 +502,7 @@ async function dailyNewsTask() {
 // Cron — 2 раза в день
 // ======================
 
-cron.schedule("21 9,15,18 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
+cron.schedule("48 9,15,21 * * *", dailyNewsTask, { timezone: "Europe/Moscow" });
 
 // ======================
 // Express сервер + webhook
