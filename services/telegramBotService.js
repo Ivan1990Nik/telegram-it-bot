@@ -1,6 +1,5 @@
 const fs = require("fs");
 const TelegramBot = require("node-telegram-bot-api");
-
 const {
   TELEGRAM_BOT_TOKEN,
   BOT_URL,
@@ -15,7 +14,7 @@ const {
   getGiftStats,
 } = require("./giftService");
 
-const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
+const bot = new TelegramBot(TELEGRAM_BOT_TOKEN); // Без polling!
 bot.setWebHook(`${BOT_URL}/bot${TELEGRAM_BOT_TOKEN}`);
 
 function initTelegramBot() {
@@ -40,13 +39,13 @@ function initTelegramBot() {
     }
   });
 
+  // Команда /suggestresource
   bot.onText(/\/suggestresource (.+)/, (msg, match) => {
     const suggestion = `
 От: ${msg.from.username || msg.from.first_name}
 Текст: ${match[1]}
 Дата: ${new Date().toISOString()}
----
-`;
+---`;
     fs.appendFileSync("suggestions.txt", suggestion);
     bot.sendMessage(msg.chat.id, "Спасибо! Мы рассмотрим твой ресурс 🙌");
   });
@@ -54,12 +53,7 @@ function initTelegramBot() {
   bot.onText(/\/suggestresource$/, (msg) => {
     bot.sendMessage(
       msg.chat.id,
-      `Привет! 👋
-Чтобы предложить ресурс, напиши команду так:
-
-/suggestresource URL_ресурса и чем полезен
-
-После этого я сохраню твоё предложение для рассмотрения.`,
+      `Привет! 👋\nЧтобы предложить ресурс, напиши команду так:\n\n/suggestresource URL_ресурса и чем полезен\n\nПосле этого я сохраню твоё предложение для рассмотрения.`,
     );
   });
 
@@ -69,6 +63,7 @@ function initTelegramBot() {
         msg.chat.id,
         "У тебя нет доступа к этой команде ❌",
       );
+
     try {
       const data = fs.readFileSync("suggestions.txt", "utf8");
       bot.sendMessage(msg.chat.id, `📂 Предложения:\n\n${data.slice(-3000)}`);
@@ -83,6 +78,7 @@ function initTelegramBot() {
         msg.chat.id,
         "У тебя нет доступа к этой команде ❌",
       );
+
     const stats = getGiftStats();
     bot.sendMessage(
       msg.chat.id,
