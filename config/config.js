@@ -9,6 +9,7 @@ const YANDEX_FOLDER_ID = process.env.YANDEX_FOLDER_ID;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const BOT_URL = process.env.BOT_URL;
+const ADMIN_ID = 8297520933;
 
 if (!TELEGRAM_CHAT_ID || !/^-100\d+$/.test(TELEGRAM_CHAT_ID)) {
   throw new Error(
@@ -37,4 +38,5 @@ module.exports = {
   SENT_POSTS_FILE,
   RESOURCES_FILE,
   GIFT_HISTORY_FILE,
+  ADMIN_ID,
 };
