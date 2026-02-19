@@ -10,7 +10,7 @@ const { sendGiftOfTheDay } = require("./giftService");
  */
 function startCronTasks() {
   // Подарок дня
-  cron.schedule("03 12 * * *", () => sendGiftOfTheDay(bot), {
+  cron.schedule("03 14 * * *", () => sendGiftOfTheDay(bot), {
     timezone: "Europe/Moscow",
   });
 
