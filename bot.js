@@ -23,7 +23,19 @@ app.post(`/bot${TELEGRAM_BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
 });
+app.post('/webhook', (req, res) => {
+  console.log('WEBHOOK ПРИШЁЛ');
 
+  console.log(req.body);
+
+  const event = req.body.event;
+
+  if (event === 'payment.succeeded') {
+    console.log('ОПЛАТА УСПЕШНА ✅');
+  }
+
+  res.sendStatus(200);
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 console.log("⏳ Бот готов к публикации IT-новостей через webhook!");
