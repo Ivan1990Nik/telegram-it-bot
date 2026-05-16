@@ -23,7 +23,7 @@ app.post(`/bot${TELEGRAM_BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
 });
-app.post('/webhook', async (req, res) => {
+app.post(`/webhook${TELEGRAM_BOT_TOKEN}`, async (req, res) => {
   const event = req.body.event;
   const payment = req.body.object;
 
