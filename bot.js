@@ -23,15 +23,24 @@ app.post(`/bot${TELEGRAM_BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
 });
-app.post('/webhook', (req, res) => {
-  console.log('WEBHOOK ПРИШЁЛ');
-
-  console.log(req.body);
-
+app.post('/webhook', async (req, res) => {
   const event = req.body.event;
+  const payment = req.body.object;
+
+  console.log('WEBHOOK:', event);
 
   if (event === 'payment.succeeded') {
-    console.log('ОПЛАТА УСПЕШНА ✅');
+
+    console.log('Оплата прошла');
+
+    console.log('ID:', payment.id);
+
+    console.log('Сумма:', payment.amount.value);
+
+    await bot.sendMessage(
+      YOUR_CHAT_ID,
+      `💰 Новая оплата: ${payment.amount.value} RUB`
+    );
   }
 
   res.sendStatus(200);
