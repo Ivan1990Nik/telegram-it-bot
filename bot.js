@@ -32,6 +32,10 @@ const app = express();
 
 app.use(express.json());
 
+// =======================
+// Главная
+// =======================
+
 app.get("/", (req, res) => {
   res.send("Your service is live 🎉");
 });
@@ -50,11 +54,15 @@ app.post(`/bot${TELEGRAM_BOT_TOKEN}`, (req, res) => {
 });
 
 // =======================
-// YooKassa payment
+// Создание оплаты
 // =======================
 
 app.get("/pay", async (req, res) => {
+
   try {
+
+    console.log("Создаём платёж...");
+
     const payment = await yooKassa.createPayment(
       {
         amount: {
@@ -77,22 +85,36 @@ app.get("/pay", async (req, res) => {
       uuidv4()
     );
 
-    res.redirect(payment.confirmation.confirmation_url);
+    console.log("Платёж создан");
+
+    console.log(payment);
+
+    return res.redirect(
+      payment.confirmation.confirmation_url
+    );
 
   } catch (e) {
 
-  console.log("ОШИБКА ЮKASSA:");
+    console.log("====== ОШИБКА YOOKASSA ======");
 
-  console.log(e.response?.data || e);
+    console.log("MESSAGE:", e.message);
 
-  res.send(
-    JSON.stringify(
-      e.response?.data || e,
-      null,
-      2
-    )
-  );
-}
+    console.log("FULL ERROR:", e);
+
+    console.log("DATA:", e.response?.data);
+
+    return res.status(500).send(`
+      <h1>Ошибка оплаты</h1>
+
+      <pre>
+MESSAGE:
+${e.message}
+
+DATA:
+${JSON.stringify(e.response?.data, null, 2)}
+      </pre>
+    `);
+  }
 });
 
 // =======================
@@ -108,7 +130,7 @@ app.get("/success", (req, res) => {
 // =======================
 
 app.get("/webhook", (req, res) => {
-  res.send("Webhook работает");
+  res.send("Webhook работает ✅");
 });
 
 // =======================
@@ -117,33 +139,44 @@ app.get("/webhook", (req, res) => {
 
 app.post("/webhook", async (req, res) => {
 
-  console.log("WEBHOOK ПРИШЁЛ");
+  try {
 
-  console.log(req.body);
+    console.log("====== WEBHOOK ПРИШЁЛ ======");
 
-  const event = req.body.event;
+    console.log(req.body);
 
-  const payment = req.body.object;
+    const event = req.body.event;
 
-  console.log("EVENT:", event);
+    const payment = req.body.object;
 
-  if (event === "payment.succeeded") {
+    console.log("EVENT:", event);
 
-    console.log("ОПЛАТА УСПЕШНА ✅");
+    if (event === "payment.succeeded") {
 
-    console.log("ID:", payment.id);
+      console.log("ОПЛАТА УСПЕШНА ✅");
 
-    console.log("Сумма:", payment.amount.value);
+      console.log("ID:", payment.id);
 
-    // Отправка в Telegram
+      console.log("Сумма:", payment.amount.value);
 
-    await bot.sendMessage(
-     process.env.TELEGRAM_CHAT_ID,
-      `💰 Новая оплата: ${payment.amount.value} RUB`
-    );
+      // Отправка сообщения в Telegram
+
+      await bot.sendMessage(
+        process.env.TELEGRAM_CHAT_ID,
+        `💰 Новая оплата: ${payment.amount.value} RUB`
+      );
+    }
+
+    res.sendStatus(200);
+
+  } catch (e) {
+
+    console.log("ОШИБКА WEBHOOK:");
+
+    console.log(e);
+
+    res.sendStatus(500);
   }
-
-  res.sendStatus(200);
 });
 
 // =======================
