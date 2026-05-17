@@ -58,9 +58,7 @@ app.post(`/bot${TELEGRAM_BOT_TOKEN}`, (req, res) => {
 // =======================
 
 app.get("/pay", async (req, res) => {
-
   try {
-
     console.log("Создаём платёж...");
 
     const payment = await yooKassa.createPayment(
@@ -75,26 +73,21 @@ app.get("/pay", async (req, res) => {
         confirmation: {
           type: "redirect",
 
-          return_url:
-            "https://telegram-it-bot-zwtt.onrender.com/success",
+          return_url: "https://telegram-it-bot-zwtt.onrender.com/success",
         },
 
         description: "Оплата заказа",
       },
 
-      uuidv4()
+      uuidv4(),
     );
 
     console.log("Платёж создан");
 
     console.log(payment);
 
-    return res.redirect(
-      payment.confirmation.confirmation_url
-    );
-
+    return res.redirect(payment.confirmation.confirmation_url);
   } catch (e) {
-
     console.log("====== ОШИБКА YOOKASSA ======");
 
     console.log("MESSAGE:", e.message);
@@ -138,9 +131,7 @@ app.get("/webhook", (req, res) => {
 // =======================
 
 app.post("/webhook", async (req, res) => {
-
   try {
-
     console.log("====== WEBHOOK ПРИШЁЛ ======");
 
     console.log(req.body);
@@ -152,7 +143,11 @@ app.post("/webhook", async (req, res) => {
     console.log("EVENT:", event);
 
     if (event === "payment.succeeded") {
-
+      console.log("🔥 PAYMENT CONFIRMED:", {
+        id: payment.id,
+        amount: payment.amount.value,
+        time: new Date().toISOString(),
+      });
       console.log("ОПЛАТА УСПЕШНА ✅");
 
       console.log("ID:", payment.id);
@@ -163,14 +158,12 @@ app.post("/webhook", async (req, res) => {
 
       await bot.sendMessage(
         process.env.TELEGRAM_CHAT_ID,
-        `💰 Новая оплата: ${payment.amount.value} RUB`
+        `💰 Новая оплата: ${payment.amount.value} RUB`,
       );
     }
 
     res.sendStatus(200);
-
   } catch (e) {
-
     console.log("ОШИБКА WEBHOOK:");
 
     console.log(e);
@@ -186,7 +179,7 @@ app.post("/webhook", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running on", PORT);
 });
 
 console.log("⏳ Бот готов!");
