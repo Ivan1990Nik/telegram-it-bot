@@ -81,10 +81,18 @@ app.get("/pay", async (req, res) => {
 
   } catch (e) {
 
-    console.log(e.response?.data || e);
+  console.log("ОШИБКА ЮKASSA:");
 
-    res.send("Ошибка оплаты");
-  }
+  console.log(e.response?.data || e);
+
+  res.send(
+    JSON.stringify(
+      e.response?.data || e,
+      null,
+      2
+    )
+  );
+}
 });
 
 // =======================
